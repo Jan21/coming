@@ -239,7 +239,6 @@ public class CodeFeatureDetectorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testProperty_V1_IS_METHOD_PARAM_TYPE_VAR() {
 
 		String content = "" + "class X {" + //
@@ -602,7 +601,6 @@ public class CodeFeatureDetectorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testProperty_AE1() {
 
 		String content = "" + "class X {" + //

@@ -55,7 +55,7 @@ public class CommitGit implements Commit {
 					FileCommit file = new FileCommitGit("", "", tw.getPathString(), fileNextVersion, this);
 					resultFileCommits.add(file);
 				}
-                tw.close();
+				tw.release();
 				return resultFileCommits;
 			} else {
 				for (RevCommit rc : revCommit.getParents()) {
