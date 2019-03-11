@@ -1,29 +1,29 @@
 package fr.inria.coming.core.entities.output;
 
-import java.io.File;
-import java.io.FileWriter;
-
-import org.apache.log4j.Logger;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-
+import com.google.gson.*;
+import fr.inria.coming.changeminer.analyzer.commitAnalyzer.FineGrainDifftAnalyzer;
 import fr.inria.coming.changeminer.entity.FinalResult;
+import fr.inria.coming.codefeatures.CustomFeatureAnalyzer;
 import fr.inria.coming.codefeatures.FeatureAnalyzer;
+import gumtree.spoon.builder.Json4SpoonGenerator;
 import fr.inria.coming.codefeatures.FeaturesResult;
 import fr.inria.coming.core.entities.RevisionResult;
 import fr.inria.coming.core.entities.interfaces.IOutput;
 import fr.inria.coming.main.ComingProperties;
+import org.apache.log4j.Logger;
+import fr.inria.coming.core.entities.AnalysisResult;
+import java.io.File;
+import java.io.FileWriter;
+import java.lang.reflect.Array;
 
 /**
  * 
  * @author Matias Martinez
  *
  */
-public class FeaturesOutput implements IOutput {
+public class CustomFeaturesOutput implements IOutput {
 	protected static Logger log = Logger.getLogger(Thread.currentThread().getName());
+	protected static Json4SpoonGenerator jsonGenerator = new Json4SpoonGenerator();
 
 	@Override
 	public void generateFinalOutput(FinalResult finalResult) {
@@ -38,7 +38,7 @@ public class FeaturesOutput implements IOutput {
 			if (rv == null)
 				continue;
 
-			FeaturesResult result = (FeaturesResult) rv.getResultFromClass(FeatureAnalyzer.class);
+			FeaturesResult result = (FeaturesResult) rv.getResultFromClass(CustomFeatureAnalyzer.class);
 			if (result == null)
 				continue;
 			save(result);
@@ -54,18 +54,21 @@ public class FeaturesOutput implements IOutput {
 
 			// Create the output dir
 			File fout = new File(ComingProperties.getProperty("output"));
+			String[] dirsArr = ComingProperties.getProperty("location").split("/");
+			String repoName = dirsArr[dirsArr.length-1];
 			fout.mkdirs();
 
-			String fileName = fout.getAbsolutePath() + File.separator + "features_" + result.getAnalyzed().getName()
+			String fileName = fout.getAbsolutePath() + File.separator + "commits_for_repo_" + repoName
 					+ ".json";
-			fw = new FileWriter(fileName);
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			fw = new FileWriter(fileName, true);
+			Gson gson = new GsonBuilder().create();
 			JsonParser jp = new JsonParser();
 			JsonElement je = jp.parse(file.toString());
 			String prettyJsonString = gson.toJson(je);
-			log.debug("\nJSON Code Change Frequency: (file stored at " + fileName + ")\n");
-			log.debug(prettyJsonString);
+			//log.debug("\nJSON Code Change Frequency: (file stored at " + fileName + ")\n");
+			//log.debug(prettyJsonString);
 			fw.write(prettyJsonString);
+			fw.write("\n");
 
 			fw.flush();
 			fw.close();
@@ -78,8 +81,8 @@ public class FeaturesOutput implements IOutput {
 
 	@Override
 	public void generateRevisionOutput(RevisionResult resultAllAnalyzed) {
-		FeaturesResult result = (FeaturesResult) resultAllAnalyzed.getResultFromClass(FeatureAnalyzer.class);
-
+		FeaturesResult result = (FeaturesResult) resultAllAnalyzed.getResultFromClass(CustomFeatureAnalyzer.class);
+		//JsonObject json = jsonGenerator.getJSONwithOperations()
 		save(result);
 	}
 

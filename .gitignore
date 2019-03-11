@@ -5,6 +5,7 @@ nbproject/
 target/
 dependency-reduced-pom.xml
 
+
 # Netbeans
 nb-configuration.xml
 nb-actions.xml
@@ -15,3 +16,7 @@ nb-actions.xml
 .classpath
 .externalToolBuilders/
 maven-eclipse.xml
+repogit4testv0/
+.idea/
+testrepo/
+.classes/

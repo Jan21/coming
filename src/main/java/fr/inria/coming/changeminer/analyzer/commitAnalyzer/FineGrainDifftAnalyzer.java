@@ -22,6 +22,7 @@ import fr.inria.coming.core.entities.DiffResult;
 import fr.inria.coming.core.entities.RevisionResult;
 import fr.inria.coming.core.entities.interfaces.IRevisionPair;
 import fr.inria.coming.main.ComingProperties;
+import fr.inria.coming.utils.TimeChrono;
 import gumtree.spoon.diff.Diff;
 import gumtree.spoon.diff.operations.Operation;
 
@@ -51,15 +52,16 @@ public class FineGrainDifftAnalyzer implements Analyzer<IRevision> {
 	 */
 	@SuppressWarnings("rawtypes")
 	public AnalysisResult<IRevision> analyze(IRevision revision) {
-
+		TimeChrono cr = new TimeChrono();
+		cr.start();
 		List<IRevisionPair> javaFiles = revision.getChildren();
 
 		Map<String, Diff> diffOfFiles = new HashMap<>();
 
 		log.info("\n*****\nCommit: " + revision.getName());
-
+		log.info("\n Num of files: " + javaFiles.size());
 		for (IRevisionPair<String> fileFromRevision : javaFiles) {
-
+			log.info(fileFromRevision);
 			String left = fileFromRevision.getPreviousVersion();
 			String right = fileFromRevision.getNextVersion();
 
@@ -67,8 +69,9 @@ public class FineGrainDifftAnalyzer implements Analyzer<IRevision> {
 			if (diff != null) {
 				diffOfFiles.put(fileFromRevision.getName(), diff);
 			}
-		}
 
+		}
+		log.info("------Total time: " + cr.stopAndGetSeconds() +  "s");
 		return new DiffResult<IRevision, Diff>(revision, diffOfFiles);
 	}
 

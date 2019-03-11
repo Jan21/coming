@@ -15,6 +15,7 @@ import fr.inria.coming.core.entities.interfaces.IFilter;
 import fr.inria.coming.core.entities.interfaces.IOutput;
 import fr.inria.coming.core.entities.interfaces.RevisionOrder;
 import fr.inria.coming.main.ComingProperties;
+import fr.inria.coming.utils.TimeChrono;
 
 /**
  * 
@@ -89,17 +90,17 @@ public abstract class RevisionNavigationExperiment<Data extends IRevision> {
 
 		RevisionDataset data = loadDataset();
 		Iterator it = this.getNavigationStrategy().orderOfNavigation(data);
-
 		int i = 1;
 
 		List<Analyzer> analyzers = this.getAnalyzers();
 
 		int size = data.size();
+        TimeChrono cr = new TimeChrono();
+        cr.start();
 
 		for (Iterator<Data> iterator = it; iterator.hasNext();) {
 
 			Data element = iterator.next();
-
 			System.out.println("\n***********\nAnalyzing " + i + "/" + size);
 			if (!accept(element)) {
 				continue;
@@ -115,7 +116,7 @@ public abstract class RevisionNavigationExperiment<Data extends IRevision> {
 			}
 
 			processEndRevision(element, resultAllAnalyzed);
-
+            System.out.println("time spend to proccess commit: " + cr.stopAndGetSeconds() + "\n");
 			i++;
 			if (i > ComingProperties.getPropertyInteger("maxrevision"))
 				break;

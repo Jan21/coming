@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.inria.coming.codefeatures.CustomFeatureAnalyzer;
+import fr.inria.coming.core.entities.output.*;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -31,10 +33,6 @@ import fr.inria.coming.core.engine.files.FileNavigationExperiment;
 import fr.inria.coming.core.engine.git.GITRepositoryInspector;
 import fr.inria.coming.core.entities.interfaces.IFilter;
 import fr.inria.coming.core.entities.interfaces.IOutput;
-import fr.inria.coming.core.entities.output.FeaturesOutput;
-import fr.inria.coming.core.entities.output.JSonChangeFrequencyOutput;
-import fr.inria.coming.core.entities.output.JSonPatternInstanceOutput;
-import fr.inria.coming.core.entities.output.StdOutput;
 import fr.inria.coming.core.extensionpoints.PlugInLoader;
 import fr.inria.coming.core.extensionpoints.changepattern.PatternFileParser;
 import fr.inria.coming.core.filter.commitmessage.BugfixKeywordsFilter;
@@ -228,6 +226,13 @@ public class ComingMain {
 				experiment.getAnalyzers().add(new FeatureAnalyzer());
 
 				experiment.getOutputProcessors().add(new FeaturesOutput());
+
+			} else if ("customfeatures".equals(mode)) {
+				experiment.getAnalyzers().clear();
+				experiment.getAnalyzers().add(new FineGrainDifftAnalyzer());
+				experiment.getAnalyzers().add(new CustomFeatureAnalyzer());
+
+				experiment.getOutputProcessors().add(new CustomFeaturesOutput());
 
 			} else {
 				// LOAD Analyzers from command
